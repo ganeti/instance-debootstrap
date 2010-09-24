@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# This is an example script that sets the timezone to a given default
+
+cp confdata/timezone $TARGET/etc/
+chroot $TARGET dpkg-reconfigure --frontend noninteractive tzdata
+
+
