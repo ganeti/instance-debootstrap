@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# This is an example script that sets the hostname and hosts file
+# This is an example script that sets the hostname and hosts file.
 
 VMFQDN=$INSTANCE_NAME
 VMHOSTNAME=${VMFQDN%%.*}
@@ -8,4 +8,3 @@ VMHOSTNAME=${VMFQDN%%.*}
 [ x$VMFQDN -eq x$VMHOSTNAME ] && VMFQDN=""
 
 echo "127.0.1.1		$VMFQDN $VMHOSTNAME" >> $TARGET/etc/host
-
