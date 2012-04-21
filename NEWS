@@ -1,3 +1,15 @@
+Version 0.10
+------------
+
+This add supports for ext4 file-systems and changes the default
+distribution from Lenny to Squeeze.
+
+Additionally, new hooks were added:
+
+- setting the password for the root user
+- setting the timezone
+- setting SSH keys for a given user
+
 Version 0.9
 -----------
 
