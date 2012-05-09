@@ -92,7 +92,7 @@ format_disk0() {
   # head/sectors for devices such as drbd which don't
   # report geometry
   sfdisk -H 64 -S 32 -u S --quiet --Linux "$1" <<EOF
-2048,,L,*
+${PARTITION_ALIGNMENT},,L,*
 EOF
 }
 
@@ -149,6 +149,7 @@ fi
 : ${VARIANTS_DIR:="@sysconfdir@/ganeti/instance-debootstrap/variants"}
 : ${GENERATE_CACHE:="yes"}
 : ${CLEAN_CACHE:="14"} # number of days to keep a cache file
+: ${PARTITION_ALIGNMENT:=2048} # sectors to align partition (1Mib default)
 if [ -z "$OS_API_VERSION" -o "$OS_API_VERSION" = "5" ]; then
   DEFAULT_PARTITION_STYLE="none"
 else
