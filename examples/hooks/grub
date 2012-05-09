@@ -1,17 +1,11 @@
 #!/bin/bash
 #
 # This is an example script that install and configure grub after installation.
-# To use it put it in your CUSTOMIZE_DIR, make it executable, and edit EXTRAPKGS
-# of your $sysconfdir/default/ganeti-instance-debootstrap.
+# To use it put it in your CUSTOMIZE_DIR and make it executable.
 #
-# Xen, for etch/lenny i386:
-#   EXTRA_PKGS="linux-image-xen-686,libc6-xen"
-# Xen, for etch/lenny amd64:
-#   EXTRA_PKGS="linux-image-xen-amd64"
-# KVM:
-#   no extra packages needed besides the normal suggested ones
-#
-# Do not include grub in EXTRA_PKGS because it will cause error of debootstrap.
+# Do not include grub in EXTRA_PKGS of
+# $sysconfdir/default/ganeti-instance-debootstrap because it will
+# cause error of debootstrap.
 
 set -e
 
@@ -27,7 +21,11 @@ if [ -z "$TARGET" -o ! -d "$TARGET" ]; then
 fi
 
 # install grub
-LANG=C
+export LANG=C
+if [ "$PROXY" ]; then
+  export http_proxy="$PROXY"
+fi
+export DEBIAN_FRONTEND=noninteractive
 chroot "$TARGET" apt-get -y --force-yes install grub grub-common
 
 # make /dev/sda
