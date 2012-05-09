@@ -1,3 +1,21 @@
+Version 0.11
+------------
+
+The partition alignment offset is now configurable (using the
+PARTITION_ALIGNMENT configuration setting, in sectors) and the
+distribution names and packages in the defaults file have been updated.
+
+Furthermore, the grub example hook has been improved a bit:
+
+- automatically uses the defined proxy, so that package installation
+  uses the same method as the main install
+- debconf frontend set to non-interactive, to prevent an debconf
+  question loop
+
+However, there still seem to be issues related to this hook (recent grub
+versions fail to run correctly "grub-install" or "update-grub" and
+complain about device mappings); help is welcome.
+
 Version 0.10
 ------------
 
@@ -88,7 +106,7 @@ Note that the cache file is no longer stored in the same directory as
 the OS definition files, but (again depending on ./configure options)
 usually under /var/cache/ganeti-instance-debootstrap.
 
-There are many other customuizable settings added in this version, for
+There are many other customizable settings added in this version, for
 example the actual OS to be installed (no longer always installing
 Debian Etch), whether to use a proxy or not, etc. See the README and the
 'defaults' files.
