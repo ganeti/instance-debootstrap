@@ -22,18 +22,20 @@
 
 # SUITE: change suite to any of the ones supported by deboostrap; this
 # could be unstable, etch, etc.:
-# SUITE="lenny"
+# SUITE="wheezy"
 
 # EXTRA_PKGS: depending on the suite and architecture you are using, different
 # extra packages are needed for different hypervisors. For example:
 #
-# Xen, for etch/lenny i386:
+# Xen, for squeeze i386:
 # EXTRA_PKGS="linux-image-xen-686,libc6-xen"
-# Xen, for etch/lenny amd64:
+# Xen, for wheezy i386:
+# EXTRA_PKGS="libc6-xen"
+# Xen, for squeeze amd64:
 # EXTRA_PKGS="linux-image-xen-amd64"
-# KVM, for lenny i386:
+# KVM, for squeeze/wheezy i386:
 # EXTRA_PKGS="acpi-support-base,console-tools,udev,linux-image-686"
-# KVM, for lenny amd64:
+# KVM, for squeeze/wheezy amd64:
 # EXTRA_PKGS="acpi-support-base,console-tools,udev,linux-image-amd64"
 #
 
