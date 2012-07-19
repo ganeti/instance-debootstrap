@@ -29,4 +29,8 @@ install-exec-local:
 	$(INSTALL_DATA) $(top_srcdir)/defaults \
 	  $(defaultsdir)/ganeti-instance-debootstrap
 
+uninstall-local:
+	rm -f $(variantsdir)/default.conf
+	rm -f $(defaultsdir)/ganeti-instance-debootstrap
+
 CLEANFILES = common.sh
