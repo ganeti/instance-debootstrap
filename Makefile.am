@@ -10,9 +10,24 @@ os_DATA = common.sh
 
 dist_doc_DATA = COPYING NEWS README
 
-EXTRA_DIST = common.sh.in defaults \
+exampledir = $(docdir)/examples
+exampleconfdir = $(exampledir)/confdata
+
+dist_exampleconf_DATA = \
+	examples/hooks/confdata/defaultpasswords \
+	examples/hooks/confdata/timezone
+
+dist_example_DATA = \
+	examples/hooks/defaultpasswords \
 	examples/hooks/grub \
-	examples/hooks/interfaces
+	examples/hooks/hosts \
+	examples/hooks/interfaces \
+	examples/hooks/ssh-keys \
+	examples/hooks/timezone
+
+EXTRA_DIST = \
+	common.sh.in \
+	defaults
 
 do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
