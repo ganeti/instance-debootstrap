@@ -1,3 +1,16 @@
+Version 0.12
+------------
+
+A few small bugfixes:
+
+- the defaults file is now installed automatically; even though all
+  settings are commented out, this allows for easier configuration
+- all existing hooks are now distributed in the archive and also
+  installed via `make install' (fixes issue 283)
+- the console activation for xen-pvm hypervisor has been corrected;
+  before it was working only for kvm (fixes issue 284)
+
+
 Version 0.11
 ------------
 
