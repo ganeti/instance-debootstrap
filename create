@@ -80,9 +80,11 @@ else
   # INCLUDE will be empty if EXTRA_PKGS is null/empty, otherwise we
   # build the full parameter format from it
   INCLUDE=${EXTRA_PKGS:+"--include=$EXTRA_PKGS"}
+  COMP=${COMPONENTS:+"--components=$COMPONENTS"}
   debootstrap \
     --arch "$DPKG_ARCH" \
     $INCLUDE \
+    $COMP \
     "$SUITE" $TMPDIR $MIRROR
 
   # remove the downloaded debs, as they are no longer needed

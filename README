@@ -58,6 +58,9 @@ named 'defaults' in the source distribution for more details):
 - EXTRAPKGS: most OSes will need some extra packages installed to make
   them work nicely under Xen; the example file containts a few
   suggestions
+- COMPONENTS: if defined, overrides the default debootstrap components
+  ("main"); this can be helpful e.g. by using "main,contrib,nonfree" for
+  Debian, or "main,universe" for Ubuntu
 - CUSTOMIZE_DIR: a directory containing customization script for the
   instance.  (by default $sysconfdir/ganeti/instance-debootstrap/hooks)
   See "Customization of the instance" below.

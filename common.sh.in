@@ -145,6 +145,7 @@ fi
 : ${SUITE:="squeeze"}
 : ${ARCH:=""}
 : ${EXTRA_PKGS:=""}
+: ${COMPONENTS:=""}
 : ${CUSTOMIZE_DIR:="@sysconfdir@/ganeti/instance-debootstrap/hooks"}
 : ${VARIANTS_DIR:="@sysconfdir@/ganeti/instance-debootstrap/variants"}
 : ${GENERATE_CACHE:="yes"}
