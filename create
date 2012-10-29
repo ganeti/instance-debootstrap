@@ -122,22 +122,32 @@ auto lo
 iface lo inet loopback
 EOF
 
+# for kvm, we should only activate a serial console if the
+# 'serial_console' parameter is set; for xen-pvm though, we should
+# always define a serial console
+SERIAL_PORT=""
 if [ "$INSTANCE_HV_serial_console" = "True" ]; then
+  SERIAL_PORT="ttyS0"
+elif [ "$HYPERVISOR" = "xen-pvm" ]; then
+  SERIAL_PORT="hvc0"
+fi
+
+if [ -n "$SERIAL_PORT" ]; then
   if [ -e $TMPDIR/etc/inittab ]; then
     # debian
-    echo "T0:23:respawn:/sbin/getty ttyS0 38400" >> $TMPDIR/etc/inittab
+    echo "T0:23:respawn:/sbin/getty $SERIAL_PORT 38400" >> $TMPDIR/etc/inittab
   elif [ -e $TMPDIR/etc/init ]; then
     # ubuntu (eg. karmic)
-    cat > $TMPDIR/etc/init/ttyS0.conf <<EOF
+    cat > $TMPDIR/etc/init/${SERIAL_PORT}.conf <<EOF
 start on stopped rc RUNLEVEL=[2345]
 stop on runlevel [!2345]
 
 respawn
-exec /sbin/getty -8 38400 ttyS0
+exec /sbin/getty -8 38400 $SERIAL_PORT
 EOF
   elif [ -e $TMPDIR/etc/event.d ]; then
     # ubuntu (eg. intrepid)
-    cat > $TMPDIR/etc/event.d/ttyS0.conf <<EOF
+    cat > $TMPDIR/etc/event.d/${SERIAL_PORT}.conf <<EOF
 start on stopped rc2
 start on stopped rc3
 start on stopped rc4
@@ -148,7 +158,7 @@ stop on runlevel 1
 stop on runlevel 6
 
 respawn
-exec /sbin/getty 38400 ttyS0
+exec /sbin/getty 38400 ${SERIAL_PORT}
 EOF
   fi
 fi
