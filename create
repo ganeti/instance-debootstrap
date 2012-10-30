@@ -19,6 +19,10 @@
 
 set -e
 
+# minimum device size is 256 MB, but we use 255 to account for
+# potential rounding
+declare -ri MIN_DEV_SIZE=$((255*1048576))
+
 . common.sh
 
 if [ "$GENERATE_CACHE" = "yes" -a ! -d "$CACHE_DIR" ]; then
@@ -36,6 +40,13 @@ if [ ! -b $blockdev ]; then
   CLEANUP+=("losetup -d $blockdev")
 fi
 
+DEVICE_SIZE=$(blockdev --getsize64 $blockdev)
+if [ "$DEVICE_SIZE" -lt $MIN_DEV_SIZE ]; then
+  echo "Device size is too small ($((DEVICE_SIZE/1048576)) MB)" 1>&2
+  echo "Required size is at least 256MB" 1>&2
+  exit 1
+fi
+
 if [ "$PARTITION_STYLE" = "none" ]; then
   filesystem_dev=$blockdev
 elif [ "$PARTITION_STYLE" = "msdos" ]; then
@@ -44,7 +55,7 @@ elif [ "$PARTITION_STYLE" = "msdos" ]; then
   filesystem_dev=$(map_disk0 $blockdev)
   CLEANUP+=("unmap_disk0 $blockdev")
 else
-  echo "Unknown partition style $PARTITION_STYLE"
+  echo "Unknown partition style $PARTITION_STYLE" 1>&2
   exit 1
 fi
 

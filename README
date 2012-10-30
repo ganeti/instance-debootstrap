@@ -38,6 +38,10 @@ ganeti will look for OS definitions.
 Configuration of instance creation
 ----------------------------------
 
+Note: the minimum disk size accepted is 256MB, as ``debootstrap``
+requires disk space both for downloading the packages and installing
+them.
+
 The kind of instance created can be customized via a settings file. This
 file is not installed by default, as the instance creation will work
 without it. The creation scripts will look for it in

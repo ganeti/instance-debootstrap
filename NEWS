@@ -5,6 +5,9 @@ A few small bugfixes:
 
 - the defaults file is now installed automatically; even though all
   settings are commented out, this allows for easier configuration
+- require and check for a minimum device size; this makes error messages
+  much clearer, compared to tar's out of disk space errors (fixes issue
+  164)
 - it is now possible to override the "components" argument to
   debootstrap, to be able to install more packages (e.g. from contrib,
   or from universe) (fixes issue 254)
