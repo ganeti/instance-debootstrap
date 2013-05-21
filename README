@@ -86,6 +86,17 @@ is installed on, not the cluster master. This is indeed not a very good
 model of using this OS but currently the OS interface in ganeti is
 limiting.
 
+Example
++++++++
+
+To create a Ubuntu 12.04 (precise) instance, your
+``/etc/default/ganeti-instance-debootstrap`` file will contain::
+
+  MIRROR="http://archive.ubuntu.com/ubuntu/"
+  SUITE="precise"
+  COMPONENTS="main,universe"
+  ARCH="amd64"
+
 Customization of the instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
