@@ -86,16 +86,46 @@ is installed on, not the cluster master. This is indeed not a very good
 model of using this OS but currently the OS interface in ganeti is
 limiting.
 
+Creating OS variants
+--------------------
+
+Every Ganeti OS supports variants, so it's possible to define custom OS
+variants with instance-debootstrap as well. First, an additional variant has
+to be defined in ``$osdir/debootstrap/variants.list`` (with ``$osdir`` being
+``/usr/share/ganeti/os`` by default). Secondly, you can configure this
+instance variant in
+``$sysconfdir/ganeti/instance-debootstrap/variants/$variant.conf``, overriding
+the settings mentioned in the previous section.
+
+To use the newly created instance variant, specify it in ``gnt-instance`` like
+this::
+
+  gnt-instance add -o debootstrap+precise ...
+
 Example
 +++++++
 
-To create a Ubuntu 12.04 (precise) instance, your
-``/etc/default/ganeti-instance-debootstrap`` file will contain::
+To create a Ubuntu 12.04 (precise) instance variant, add the following to
+``$osdir/debootstrap/variants.list``::
+
+  precise
+
+Now create the file
+``$sysconfdir/ganeti/instance-debootstrap/variants/precise.conf`` with the
+following content::
 
   MIRROR="http://archive.ubuntu.com/ubuntu/"
   SUITE="precise"
   COMPONENTS="main,universe"
   ARCH="amd64"
+
+You can create Ubuntu 12.04 instances as follows::
+
+  gnt-instance add -t plain -o debootstrap+precise --disk 0:size=10000m -n node1.example.com instance1.example.com
+
+For this to work, make sure that you have the appropriate debootstrap script
+for precise (or just create a symlink called ``precise`` to ``gutsy`` in
+``/usr/share/debootstrap/scripts``).
 
 Customization of the instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
