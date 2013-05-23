@@ -1,0 +1,1 @@
+filesystem The filesystem type to use for the root partition. This has to be a filesystem type supported by ``mke2fs``. The default is 'ext4'.

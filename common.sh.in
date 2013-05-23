@@ -157,6 +157,7 @@ else
   DEFAULT_PARTITION_STYLE="msdos"
 fi
 : ${PARTITION_STYLE:=$DEFAULT_PARTITION_STYLE} # disk partition style
+: ${OSP_FILESYSTEM:="ext4"}
 
 CACHE_DIR="@localstatedir@/cache/ganeti-instance-debootstrap"
 
@@ -184,7 +185,8 @@ if [ -z "$OS_API_VERSION" -o "$OS_API_VERSION" = "5" ]; then
   GETOPT_RESULT=`getopt -o o:n:i:b:s: -n '$0' -- "$@"`
   if [ $? != 0 ] ; then log_error "Terminating..."; exit 1 ; fi
   get_api5_arguments $GETOPT_RESULT
-elif [ "$OS_API_VERSION" = "10" -o "$OS_API_VERSION" = "15" ]; then
+elif [ "$OS_API_VERSION" = "10" -o "$OS_API_VERSION" = "15" -o \
+       "$OS_API_VERSION" = "20" ]; then
   get_api10_arguments
 else
   log_error "Unknown OS API VERSION $OS_API_VERSION"

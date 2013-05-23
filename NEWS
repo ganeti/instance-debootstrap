@@ -3,6 +3,10 @@ Version 0.13
 
 The Debian version installed by default is now Wheezy.
 
+The filesystem type for the root partition of instances is now
+configurable through the new OS parameter ``filesystem``. It
+defaults to 'ext4'.
+
 Improve documentation with regard to instance variants.
 
 

@@ -59,7 +59,7 @@ else
   exit 1
 fi
 
-mke2fs -Fjq $filesystem_dev
+mke2fs -Fjqt $OSP_FILESYSTEM $filesystem_dev
 root_uuid=$($VOL_ID $filesystem_dev )
 
 if [ -n "$swapdev" ]; then

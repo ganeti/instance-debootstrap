@@ -127,6 +127,17 @@ For this to work, make sure that you have the appropriate debootstrap script
 for precise (or just create a symlink called ``precise`` to ``gutsy`` in
 ``/usr/share/debootstrap/scripts``).
 
+Instance creation parameters
+----------------------------
+
+Some aspects of the created instance can be conrolled via parameters at
+instance creation time with the ``-O`` parameter of ``gnt-instance``.
+
+The supported parameters are:
+
+- filesystem: the filesystem type to use for the root partition. This  has to
+  be a filesystem type supported by ``mke2fs``. The default is 'ext4'.
+
 Customization of the instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
