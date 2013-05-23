@@ -9,6 +9,10 @@ defaults to 'ext4'.
 
 Improve documentation with regard to instance variants.
 
+Bugfixes:
+
+- Report an error if it's exporting an instance fails because of the
+  wrong filesystem type.
 
 Version 0.12
 ------------
