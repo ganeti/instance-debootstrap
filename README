@@ -167,6 +167,21 @@ daemons using this directory, otherwise the installation will fail because it
 won't be able to umount the filesystem from the directory, and hand the
 instance back to Ganeti.
 
+Example
++++++++
+
+The root password can be automatically set when the instance is created. In
+order to do this, the ``examples/hooks/defaultpasswords`` file has to be copied
+to ``$sysconfdir/ganeti/instance-debootstrap/hooks/``, and its data file
+``examples/hooks/confdata/defaultpasswords`` has to be copied to
+``$sysconfdir/ganeti/instance-debootstrap/hooks/confdata/`` and modified
+accordingly to one's own need. The file syntax is such that each line represent
+a user, with the format::
+
+  username:password
+
+After copying the two files, just running the instance creation as usual will
+automatically cause their execution.
 
 Caching
 ~~~~~~~
