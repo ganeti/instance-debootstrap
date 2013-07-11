@@ -113,6 +113,9 @@ else
   fi
 fi
 
+# reset the root password
+chroot $TMPDIR passwd -d root
+
 cp -p /etc/hosts $TMPDIR/etc/hosts
 cp -p /etc/resolv.conf $TMPDIR/etc/resolv.conf
 echo $instance > $TMPDIR/etc/hostname
