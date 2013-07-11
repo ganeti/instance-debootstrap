@@ -57,7 +57,7 @@ named 'defaults' in the source distribution for more details):
 - ARCH: either i386 or amd64, otherwise your current architecture will
   be used
 - SUITE: the actual OS to be installed; the current default is Debian
-  *lenny*, and you can choose any of the OSes supported deboostrap (on
+  *wheezy*, and you can choose any of the OSes supported deboostrap (on
   Debian, look into /usr/share/deboostrap/scripts)
 - EXTRAPKGS: most OSes will need some extra packages installed to make
   them work nicely under Xen; the example file containts a few
@@ -152,7 +152,7 @@ installation. The following environment variables are passed, in
 addition to the ones ganeti passes to the OS scripts:
 
 TARGET: directory in which the filesystem is mounted
-SUITE: suite installed by debootstrap (eg: lenny)
+SUITE: suite installed by debootstrap (eg: wheezy)
 ARCH: target architecture
 PARTITION_STYLE: style of the disk partitioning (see above)
 EXTRA_PKGS: extra packages installed by debootstrap
