@@ -125,7 +125,7 @@ cat > $TMPDIR/etc/fstab <<EOF
 # /etc/fstab: static file system information.
 #
 # <file system>   <mount point>   <type>  <options>       <dump>  <pass>
-UUID=$root_uuid   /               ext3    defaults        0       1
+UUID=$root_uuid   /               $OSP_FILESYSTEM    defaults        0       1
 proc              /proc           proc    defaults        0       0
 EOF
 
