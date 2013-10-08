@@ -7,12 +7,15 @@ The filesystem type for the root partition of instances is now
 configurable through the new OS parameter ``filesystem``. It
 defaults to 'ext4'.
 
-Improve documentation with regard to instance variants.
+Improve documentation with regard to instance variants and to how to set up
+hooks.
 
 Bugfixes:
 
 - Report an error if it's exporting an instance fails because of the
   wrong filesystem type.
+- The root password is automatically cleared, so that it is possible to
+  immediately log into a newly created instance.
 
 Version 0.12
 ------------
