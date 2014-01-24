@@ -25,7 +25,7 @@ set -e
 # This is needed for file disks.
 if [ ! -b $blockdev ]; then
   ORIGINAL_BLOCKDEV=$blockdev
-  blockdev=$(losetup -sf $blockdev)
+  blockdev=$(losetup --show -f $blockdev)
   CLEANUP+=("losetup -d $blockdev")
 fi
 
