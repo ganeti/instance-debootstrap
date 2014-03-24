@@ -105,7 +105,7 @@ map_disk0() {
     log_error "Cannot interpret kpartx output and get partition mapping"
     exit 1
   fi
-  kpartx -a -p- $blockdev > /dev/null
+  kpartx -a -s -p- $blockdev > /dev/null
   filesystem_dev="/dev/mapper/$filesystem_dev_base"
   if [ ! -b "$filesystem_dev" ]; then
     log_error "Can't find kpartx mapped partition: $filesystem_dev"
