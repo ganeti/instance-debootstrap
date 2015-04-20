@@ -38,6 +38,7 @@ if [ ! -b $blockdev ]; then
   ORIGINAL_BLOCKDEV=$blockdev
   blockdev=$(losetup --show -f $blockdev)
   CLEANUP+=("losetup -d $blockdev")
+  CLEANUP+=("udevadm settle")
 fi
 
 DEVICE_SIZE=$(blockdev --getsize64 $blockdev)
