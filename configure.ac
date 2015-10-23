@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT(ganeti-instance-debootstrap, 0.14, ganeti@googlegroups.com)
+AC_INIT(ganeti-instance-debootstrap, 0.15, ganeti@googlegroups.com)
 
 AC_CONFIG_AUX_DIR(autotools)
 AC_CONFIG_SRCDIR(configure)
