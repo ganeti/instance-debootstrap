@@ -87,11 +87,14 @@ get_api10_arguments() {
 }
 
 format_disk0() {
-  # Create one big partition, and make it bootable
-  # some versions of sfdisk need manual specification of
-  # head/sectors for devices such as drbd which don't
-  # report geometry
-  sfdisk -H 64 -S 32 -u S --quiet --Linux "$1" <<EOF
+  # Create one big partition, and make it bootable.
+  local ARGS
+  # Some versions of sfdisk need manual specification of head/sectors
+  # for devices such as drbd which don't report geometry.
+  if sfdisk --help | grep -q -e '--cylinders'; then
+    ARGS="-H 64 -S 32 -u S --Linux"
+  fi
+  sfdisk $ARGS --quiet "$1" <<EOF
 ${PARTITION_ALIGNMENT},,L,*
 EOF
 }
