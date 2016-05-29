@@ -145,7 +145,7 @@ fi
 # will use it, this declaration is to make sure the variable is set
 : ${MIRROR:=""}
 : ${PROXY:=""}
-: ${SUITE:="wheezy"}
+: ${SUITE:="jessie"}
 : ${ARCH:=""}
 : ${EXTRA_PKGS:=""}
 : ${COMPONENTS:=""}

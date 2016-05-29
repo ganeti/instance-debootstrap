@@ -19,9 +19,9 @@
 
 set -e
 
-# minimum device size is 256 MB, but we use 255 to account for
+# minimum device size is 512 MB, but we use 511 to account for
 # potential rounding
-declare -ri MIN_DEV_SIZE=$((255*1048576))
+declare -ri MIN_DEV_SIZE=$((511*1048576))
 
 . common.sh
 
