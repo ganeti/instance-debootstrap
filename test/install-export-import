@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -eu
+
+if [ $(id -u) != 0 ]; then
+  echo "Testing requires root due to losetup/kpartx usage" 2>&1
+  exit 77
+fi
+
+TEMPDIR=$(mktemp -d)
+trap 'rm -rf "$TEMPDIR"' EXIT
+
+DISK0="$TEMPDIR/disk0"
+dd if=/dev/zero of="$DISK0" bs=1024k count=512
+
+DUMP="$TEMPDIR/dump"
+
+# check that we can actually run losetup, otherwise we might be under
+# fakeroot, for example; include sbin* dirs in PATH to ensure we don't
+# fail due to command not found.
+PATH=$PATH:/sbin:/usr/sbin
+LOOP=$(losetup --show -f "$DISK0") || \
+  { echo "losetup doesn't work, skipping test" 2>&1 ;
+    exit 77;
+  }
+losetup -d "$LOOP"
+
+echo "Installing instance..."
+GENERATE_CACHE=no \
+  CLEAN_CACHE="" \
+  OS_API_VERSION=10 \
+  INSTANCE_NAME=foo.example.com \
+  HYPERVISOR=dont-care \
+  DISK_COUNT=1 \
+  DISK_0_PATH="$DISK0" \
+  $srcdir/create
+
+echo "Exporting instance..."
+
+OS_API_VERSION=10 \
+  INSTANCE_NAME=foo.example.com \
+  HYPERVISOR=dont-care \
+  DISK_COUNT=1 \
+  DISK_0_PATH="$DISK0" \
+  EXPORT_DISK_PATH="$DISK0" \
+  EXPORT_DEVICE="$DISK0" \
+  EXPORT_INDEX=0 \
+  $srcdir/export > "$DUMP"
+
+echo "Importing instance..."
+
+# first wipe the disk.
+dd if=/dev/zero of="$DISK0" bs=1024k count=512
+
+OS_API_VERSION=10 \
+  INSTANCE_NAME=foo.example.com \
+  HYPERVISOR=dont-care \
+  DISK_COUNT=1 \
+  DISK_0_PATH="$DISK0" \
+  IMPORT_DISK_PATH="$DISK0" \
+  IMPORT_DEVICE="$DISK0" \
+  IMPORT_INDEX=0 \
+  $srcdir/import < "$DUMP"
+
+# Do a listing of the directory (to see the size of the dump, a proxy
+# for the needed install space).
+ls -l -h "$TEMPDIR"

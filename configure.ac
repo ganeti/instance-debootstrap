@@ -4,7 +4,7 @@ AC_INIT(ganeti-instance-debootstrap, 0.15, ganeti@googlegroups.com)
 AC_CONFIG_AUX_DIR(autotools)
 AC_CONFIG_SRCDIR(configure)
 
-AM_INIT_AUTOMAKE([1.9 foreign tar-ustar -Wall -Wno-portability])
+AM_INIT_AUTOMAKE([1.11 foreign tar-ustar -Wall -Wno-portability])
 
 # --with-os-dir=...
 AC_ARG_WITH([os-dir],

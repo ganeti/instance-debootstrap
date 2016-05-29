@@ -27,7 +27,8 @@ dist_example_DATA = \
 
 EXTRA_DIST = \
 	common.sh.in \
-	defaults
+	defaults \
+	$(TESTS)
 
 do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
@@ -35,6 +36,9 @@ do_subst = sed \
 
 common.sh: common.sh.in Makefile
 	$(do_subst) < $< > $@
+
+TESTS = \
+	test/install-export-import
 
 install-exec-local:
 	@mkdir_p@ $(variantsdir)

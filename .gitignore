@@ -8,6 +8,9 @@
 /config.log
 /config.status
 /configure
+/test-suite.log
+/test/*.log
+/test/*.trs
 
 # built scripts
 /common.sh
