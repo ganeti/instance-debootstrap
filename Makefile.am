@@ -35,7 +35,6 @@ do_subst = sed \
 
 common.sh: common.sh.in Makefile
 	$(do_subst) < $< > $@
-	chmod +x $@
 
 install-exec-local:
 	@mkdir_p@ $(variantsdir)
