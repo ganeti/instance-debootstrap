@@ -1,3 +1,15 @@
+Version 0.15
+------------
+
+Small bugfix release:
+
+- improved compatibility with newer `losetup` versions (issue 690)
+- make kpartx run in sync mode, so that partitions are present by the
+  time we want to access them
+- wait for udev to finish scanning (loopback) devices before attempting
+  to delete them
+- fix parsing of UUIDs that contain "-1" as sub-string
+
 Version 0.14
 ------------
 
