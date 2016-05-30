@@ -1,3 +1,19 @@
+Version 0.16
+------------
+
+Again a small bugfix release:
+
+- ensure the same filesystem is used consistently throughout the code
+  (issue 1175); previously only the create script was paying attention
+  to `OSP_FILESYSTEM`
+- fix compatibility with sfdisk version 2.26 and later (Ubuntu bug
+  LP#1577346)
+- improve checks for required programs at configure time
+- change default distribution to Jessie and increase minimum accepted
+  disk size from 256MiB to 512MiB
+- add a small test suite to allow for easier integration testing with
+  distributions
+
 Version 0.15
 ------------
 
