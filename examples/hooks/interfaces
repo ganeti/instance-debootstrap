@@ -25,7 +25,6 @@
 ## !!! In modern distros you must disable the Predictable Network Interface
 ## !!! Names standard:
 ## !!!    gnt-instance modify -H kernel_args='... net.ifnames=0'
-
 if [ -z "$TARGET" -o ! -d "$TARGET" ]; then
   echo "Missing target directory"
   exit 1
@@ -42,26 +41,6 @@ if [ -z "$NIC_COUNT" ]; then
 fi
 
 if [ "$NIC_COUNT" -gt 0 ]; then
-
-# check weather to use dhcp or static method
-if [ -n "${NIC_0_IP}" ]; then
-  _nic_0_method="static"
-  if [ -z "${NIC_0_NETWORK_SUBNET}" ] ; then
-    echo "Missing NETWORK SUBNET from gnt-network"
-    exit 1
-  fi
-  if [ -z "${NIC_0_NETWORK_GATEWAY}" ]; then
-    echo "Missing NETWORK GATEWAY from gnt-network"
-    exit 1
-  fi
-  _nic_0_cfg_block="    address ${NIC_0_IP}
-    netmask ${NIC_0_NETWORK_SUBNET##*/}
-    gateway ${NIC_0_NETWORK_GATEWAY}"
-else
-  _nic_0_method="dhcp"
-  _nic_0_cfg_block=""
-fi
-
   cat > $TARGET/etc/network/interfaces <<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -70,9 +49,28 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet ${_nic_0_method}
-${_nic_0_cfg_block}
-
 EOF
 
+  if [ -n "$NIC_0_IP" ]; then
+    if [ -z "$NIC_0_NETWORK_SUBNET" ] ; then
+      echo "Missing NETWORK SUBNET from gnt-network"
+      exit 1
+    fi
+    if [ -z "$NIC_0_NETWORK_GATEWAY" ]; then
+      echo "Missing NETWORK GATEWAY from gnt-network"
+      exit 1
+    fi
+    cat >> $TARGET/etc/network/interfaces <<EOF
+iface eth0 inet static
+  address $NIC_0_IP
+  netmask ${NIC_0_NETWORK_SUBNET##*/}
+  gateway $NIC_0_NETWORK_GATEWAY
+EOF
+
+  else
+    cat >> $TARGET/etc/network/interfaces <<EOF
+iface eth0 inet dhcp
+EOF
+
+  fi
 fi
