@@ -74,9 +74,3 @@ CLEAN_CACHE="14"
 # Ganeti 1.2 (os api version 5)
 # PARTITION_STYLE="none"
 
-# PARTITION_ALIGNMENT: the alignment of the partitions in sectors
-# (512B); this defaults to 1MiB to give grub enough space for
-# embedding and for better alignment with modern media (HDDs and
-# SSDs), feel free to increase it if your media has even bigger
-# allocation blocks
-# PARTITION_ALIGNMENT=2048
