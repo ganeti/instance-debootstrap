@@ -82,13 +82,14 @@ if [ "$CLEAN_CACHE" -a -d "$CACHE_DIR" ]; then
     xargs -r0 rm -f
 fi
 
+if [ "$PROXY" ]; then
+  export http_proxy="$PROXY"
+  export https_proxy="$PROXY"
+fi
+
 if [ -f "$CACHE_FILE" ]; then
   tar xf "$CACHE_FILE" -C $TMPDIR
 else
-  if [ "$PROXY" ]; then
-    export http_proxy="$PROXY"
-    export https_proxy="$PROXY"
-  fi
   # INCLUDE will be empty if EXTRA_PKGS is null/empty, otherwise we
   # build the full parameter format from it
   INCLUDE=${EXTRA_PKGS:+"--include=$EXTRA_PKGS"}
