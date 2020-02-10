@@ -44,7 +44,7 @@ fi
 DEVICE_SIZE=$(blockdev --getsize64 $blockdev)
 if [ "$DEVICE_SIZE" -lt $MIN_DEV_SIZE ]; then
   echo "Device size is too small ($((DEVICE_SIZE/1048576)) MB)" 1>&2
-  echo "Required size is at least 256MB" 1>&2
+  echo "Required size is at least 512MB" 1>&2
   exit 1
 fi
 
