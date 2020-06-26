@@ -83,7 +83,7 @@ if [ "$CLEAN_CACHE" -a -d "$CACHE_DIR" ]; then
 fi
 
 if [ -f "$CACHE_FILE" ]; then
-  tar xf "$CACHE_FILE" -C $TMPDIR
+  tar --acls --selinux --xattrs --xattrs-include='*' -x -f "$CACHE_FILE" -C $TMPDIR
 else
   if [ "$PROXY" ]; then
     export http_proxy="$PROXY"
@@ -109,7 +109,7 @@ else
 
   if [ "$GENERATE_CACHE" = "yes" ]; then
     TMP_CACHE=`mktemp "${CACHE_FILE}.XXXXXX"`
-    tar cf "$TMP_CACHE" -C $TMPDIR .
+    tar --acls --selinux --xattrs --xattrs-include='*' -c -f "$TMP_CACHE" -C $TMPDIR .
     mv -f "$TMP_CACHE" "$CACHE_FILE"
   fi
 fi
