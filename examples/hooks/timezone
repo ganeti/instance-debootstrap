@@ -4,9 +4,10 @@
 # or to the one of the host is none is configured.
 
 if [ -r confdata/timezone ]; then
-  cp confdata/timezone $TARGET/etc/
+  TZ=`cat "confdata/timezone"`
 else
-  cp /etc/timezone $TARGET/etc/
+  TZ=`cat "/etc/timezone"`
 fi
 
+chroot $TARGET ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
 chroot $TARGET dpkg-reconfigure --frontend noninteractive tzdata
