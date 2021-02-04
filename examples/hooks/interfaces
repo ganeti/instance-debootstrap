@@ -21,10 +21,6 @@
 # installation.  By default its sets up the system to use dhcp. To use it just
 # put it in your CUSTOMIZE_DIR and make it executable.
 
-## !!! This hook asumes that your NIC inside the VM is named eth0.
-## !!! In modern distros you must disable the Predictable Network Interface
-## !!! Names standard:
-## !!!    gnt-instance modify -H kernel_args='... net.ifnames=0'
 if [ -z "$TARGET" -o ! -d "$TARGET" ]; then
   echo "Missing target directory"
   exit 1
@@ -56,15 +52,13 @@ EOF
       echo "Missing NETWORK SUBNET from gnt-network"
       exit 1
     fi
-    if [ -z "$NIC_0_NETWORK_GATEWAY" ]; then
-      echo "Missing NETWORK GATEWAY from gnt-network"
-      exit 1
-    fi
+    # we do not fail if no gateway was specified; we just avoid
+    # emitting a # 'gateway' line into /etc/network/interfaces
     cat >> $TARGET/etc/network/interfaces <<EOF
 iface eth0 inet static
   address $NIC_0_IP
   netmask ${NIC_0_NETWORK_SUBNET##*/}
-  gateway $NIC_0_NETWORK_GATEWAY
+  $( [ ! -z "${NIC_0_NETWORK_GATEWAY}" ] && echo "gateway ${NIC_0_NETWORK_GATEWAY}")
 EOF
 
   else
