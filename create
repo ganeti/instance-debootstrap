@@ -61,6 +61,13 @@ else
 fi
 
 mke2fs -Fjqt $OSP_FILESYSTEM $filesystem_dev
+
+# in some cases, mkfs will remap the partition tables, for example
+# /dev/mapper/foo-1 will turn into /dev/mapper/foo-part1. Rebuild the
+# map so we correct that:
+unmap_disk0 $blockdev
+filesystem_dev=$(map_disk0 $blockdev)
+
 root_uuid=$($VOL_ID $filesystem_dev )
 
 if [ -n "$swapdev" ]; then
