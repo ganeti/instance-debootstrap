@@ -1,0 +1,56 @@
+#!/bin/bash 
+#
+# This is an example script that install and configure EXTLINUX boot loader
+# after installation.  Requires extlinux (package) to be available on nodes.
+# Tested on Debian 10.
+#
+# To use it put it in your CUSTOMIZE_DIR and make it executable.
+#
+
+set -e
+
+. common.sh
+
+CLEANUP=( )
+
+trap cleanup EXIT
+
+ELINSTALLER="/usr/bin/extlinux"
+MBRFILE="/usr/lib/EXTLINUX/mbr.bin"
+
+if [ -z "$TARGET" -o ! -d "$TARGET" ]; then
+  echo "Missing target directory"
+  exit 1
+fi
+
+if [ "$PARTITION_STYLE" = 'msdos' ]; then
+	if [ ! -e "$ELINSTALLER" ]; then
+	  echo "Missing extlinux installer on $(/usr/bin/hostname)"
+	  exit 1
+	fi
+
+	if [ ! -e "$MBRFILE" ]; then
+	  echo "Missing extlinux MBR file on $(/usr/bin/hostname)"
+	  exit 1
+	fi
+
+	# extlinux install
+	cat << EOF > "$TARGET/boot/extlinux.conf"
+PROMPT 1
+TIMEOUT 10
+DEFAULT Linux
+
+LABEL Linux
+	LINUX /vmlinuz
+	APPEND root=/dev/vda1 ro
+	INITRD /initrd.img
+
+LABEL Linux_old
+	LINUX /vmlinuz.old
+	APPEND root=/dev/vda1 ro
+	INITRD /initrd.img.old
+EOF
+	"$ELINSTALLER" -i "$TARGET/boot/"
+# install extlinux MBR on boot device
+	cat "$MBRFILE" > "$DISK_0_PATH"
+fi
