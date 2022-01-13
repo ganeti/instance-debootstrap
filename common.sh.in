@@ -126,6 +126,7 @@ map_disk0() {
 }
 
 unmap_disk0() {
+  sync
   kpartx -d -p- $1
 }
 
