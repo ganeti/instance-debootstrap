@@ -1,3 +1,22 @@
+Version 0.17
+------------
+
+Release accumulated commits over the years:
+
+- timezone-hook: don't use obsolete /etc/timezone, thanks to Wurzelmann
+  (fad62c8)
+- align partition name prefix with multipath, thanks to Jérôme Charaoui
+  (e0df6b1)
+- support EXTLINUX boot loader as an example, thanks to Ivan Rossi (6e134ef)
+- export http_proxy every time, thanks to Émile Morel (5a00f83)
+- enable instance network configuration WRT gnt-network, thanks to Wurzelmann
+  (b4a2f34)
+- respect Linux capabilities(7) in cache, thanks to Antoine Beaupré (8052845),
+  already in Debian
+- inform about the correct minimum disk size
+- make newer sfdisk work again on top of LVM/DRBD, thanks to Apollon
+  Oikonomopoulos (e145396), already in Debian
+
 Version 0.16
 ------------
 
