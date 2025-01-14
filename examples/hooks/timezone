@@ -6,7 +6,7 @@
 if [ -r confdata/timezone ]; then
   TZ=`cat "confdata/timezone"`
 else
-  TZ=`cat "/etc/timezone"`
+  TZ=`realpath --relative-to /usr/share/zoneinfo /etc/localtime`
 fi
 
 chroot $TARGET ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime
