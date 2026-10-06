@@ -1,30 +1,32 @@
-ganeti-instance-debootstrap
-===========================
+# ganeti-instance-debootstrap
 
 This is a guest OS definition for Ganeti (http://code.google.com/p/ganeti).
 It will install a minimal version of Debian or Ubuntu via debootstrap (thus it
 requires network access). This only works if you have a Debian-based node or
 you have debootstrap installed by hand on another distribution.
 
-Installation
-------------
+## Installation
 
 In order to install this package from source, you need to determine what
 options ganeti itself has been configured with. If ganeti was built
 directly from source, then the only place it looks for OS definitions is
-``/srv/ganeti/os``, and you need to install the OS under it::
+`/srv/ganeti/os`, and you need to install the OS under it:
 
-  ./configure --prefix=/usr --localstatedir=/var \
-    --sysconfdir=/etc \
-    --with-os-dir=/srv/ganeti/os
-  make && make install
+```shell
+./configure --prefix=/usr --localstatedir=/var \
+  --sysconfdir=/etc \
+  --with-os-dir=/srv/ganeti/os
+make && make install
+```
 
 If ganeti was installed from a package, its default OS path should
-already include /usr/share/ganeti/os, so you can just run::
+already include /usr/share/ganeti/os, so you can just run:
 
-  ./configure -prefix=/usr --localstatedir=/var \
-    --sysconfdir=/etc
-  make && make install
+```shell
+./configure -prefix=/usr --localstatedir=/var \
+  --sysconfdir=/etc
+make && make install
+```
 
 Note that you need to repeat this procedure on all nodes of the cluster.
 
@@ -35,8 +37,7 @@ python modules tree (e.g.
 a variable named OS_SEARCH_PATH will list all the directories in which
 ganeti will look for OS definitions.
 
-Configuration of instance creation
-----------------------------------
+## Configuration of instance creation
 
 Note: the minimum disk size accepted is 256MB, as ``debootstrap``
 requires disk space both for downloading the packages and installing
@@ -76,70 +77,103 @@ named 'defaults' in the source distribution for more details):
   otherwise, the value of this variable will be taken as the number of
   days after which to remove the cache file; the default is 14 (two
   weeks)
-- PARTITION_STYLE: if 'none' the device will be formatted directly, if 'msdos'
-  a partition table will be installed on it. You need to have kpartx installed
-  to use the 'msdos' option. The default is 'msdos' from Ganeti 2.0 onwards,
-  but still 'none' if installing under Ganeti 1.2
+- PARTITION_STYLE: set to 'none', 'msdos'  or 'gpt-uefi'. See next section
+  for more information.
 
 Note that the settings file is important on the node that the instance
 is installed on, not the cluster master. This is indeed not a very good
 model of using this OS but currently the OS interface in ganeti is
 limiting.
 
-Creating OS variants
---------------------
+### Partition Styles
+
+We support different types of partition/formatting options. In all variants,
+the Linux filesystem type can be controlled to the `filesystem` OS parameter
+and defaults to `ext4`.
+
+#### none
+
+Use this variant for direct kernel booting: the entire blockdevice will be
+formatted with a filesystem directly.
+
+#### msdos
+
+Use this variant for legacy PC-style boot: a "msdos"-type partition table
+with one Linux partition will be created and the single partition will be
+formatted with a filesystem. This requires `kpartx` to be installed.
+
+#### gpt-uefi
+
+Use this variant for UEFI-style boot: a "GPT"-type partition table with
+one EFI and one Linux partition will be created. The EFI partition will
+be formatted with FAT32, while the Linux partition defaults to `ext4`.
+The EFI partition is added to `/etc/fstab` as `/boot/efi`.
+This requires both `kpartx` and `dosfstools` to be installed.
+
+Note that exporting and importing instances with this partition style
+uses a raw `dd` of the whole disk: the dump includes the partition
+table and the EFI data, but it has the full size of the instance disk,
+regardless of how much of it is actually in use.
+
+
+## Creating OS variants
 
 Every Ganeti OS supports variants, so it's possible to define custom OS
 variants with instance-debootstrap as well. First, an additional variant has
-to be defined in ``$osdir/debootstrap/variants.list`` (with ``$osdir`` being
-``/usr/share/ganeti/os`` by default). Secondly, you can configure this
+to be defined in `$osdir/debootstrap/variants.list` (with `$osdir` being
+`/usr/share/ganeti/os` by default). Secondly, you can configure this
 instance variant in
-``$sysconfdir/ganeti/instance-debootstrap/variants/$variant.conf``, overriding
+`$sysconfdir/ganeti/instance-debootstrap/variants/$variant.conf`, overriding
 the settings mentioned in the previous section.
 
-To use the newly created instance variant, specify it in ``gnt-instance`` like
-this::
+To use the newly created instance variant, specify it in `gnt-instance` like
+this:
 
-  gnt-instance add -o debootstrap+precise ...
+```shell
+gnt-instance add -o debootstrap+precise ...
+```
 
-Example
-+++++++
+### Example
 
 To create a Ubuntu 12.04 (precise) instance variant, add the following to
-``$osdir/debootstrap/variants.list``::
+`$osdir/debootstrap/variants.list`:
 
-  precise
+```
+precise
+```
 
 Now create the file
-``$sysconfdir/ganeti/instance-debootstrap/variants/precise.conf`` with the
-following content::
+`$sysconfdir/ganeti/instance-debootstrap/variants/precise.conf` with the
+following content:
 
-  MIRROR="http://archive.ubuntu.com/ubuntu/"
-  SUITE="precise"
-  COMPONENTS="main,universe"
-  ARCH="amd64"
+```shell
+MIRROR="http://archive.ubuntu.com/ubuntu/"
+SUITE="precise"
+COMPONENTS="main,universe"
+ARCH="amd64"
+```
 
-You can create Ubuntu 12.04 instances as follows::
+You can create Ubuntu 12.04 instances as follows:
 
-  gnt-instance add -t plain -o debootstrap+precise --disk 0:size=10000m -n node1.example.com instance1.example.com
+```shell
+gnt-instance add -t plain -o debootstrap+precise --disk 0:size=10000m -n node1.example.com instance1.example.com
+```
 
 For this to work, make sure that you have the appropriate debootstrap script
-for precise (or just create a symlink called ``precise`` to ``gutsy`` in
-``/usr/share/debootstrap/scripts``).
+for precise (or just create a symlink called `precise` to `gutsy` in
+`/usr/share/debootstrap/scripts`).
 
-Instance creation parameters
-----------------------------
+## Instance creation parameters
 
 Some aspects of the created instance can be conrolled via parameters at
-instance creation time with the ``-O`` parameter of ``gnt-instance``.
+instance creation time with the `-O` parameter of `gnt-instance`.
 
 The supported parameters are:
 
 - filesystem: the filesystem type to use for the root partition. This  has to
-  be a filesystem type supported by ``mke2fs``. The default is 'ext4'.
+  be a filesystem type supported by `mke2fs`. The default is 'ext4'.
 
-Customization of the instance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## Customization of the instance
 
 If run-parts is in the os create script, and the CUSTOMIZE_DIR (by
 default $sysconfdir/ganeti/instance-debootstrap/hooks,
@@ -151,13 +185,13 @@ and hyphens) is executed to allow further personalization of the
 installation. The following environment variables are passed, in
 addition to the ones ganeti passes to the OS scripts:
 
-TARGET: directory in which the filesystem is mounted
-SUITE: suite installed by debootstrap (eg: wheezy)
-ARCH: target architecture
-PARTITION_STYLE: style of the disk partitioning (see above)
-EXTRA_PKGS: extra packages installed by debootstrap
-BLOCKDEV: ganeti block device
-FSYSDEV: device in which the filesystem resides (the one mounted in TARGET)
+- TARGET: directory in which the filesystem is mounted
+- SUITE: suite installed by debootstrap (eg: wheezy)
+- ARCH: target architecture
+- PARTITION_STYLE: style of the disk partitioning (see above)
+- EXTRA_PKGS: extra packages installed by debootstrap
+- BLOCKDEV: ganeti block device
+- FSYSDEV: device in which the filesystem resides (the one mounted in TARGET)
 
 The scripts in CUSTOMIZE_DIR can exit with an error code to signal an error in
 the instance creation, should they fail.
@@ -167,24 +201,24 @@ daemons using this directory, otherwise the installation will fail because it
 won't be able to umount the filesystem from the directory, and hand the
 instance back to Ganeti.
 
-Example
-+++++++
+### Example
 
 The root password can be automatically set when the instance is created. In
-order to do this, the ``examples/hooks/defaultpasswords`` file has to be copied
-to ``$sysconfdir/ganeti/instance-debootstrap/hooks/``, and its data file
-``examples/hooks/confdata/defaultpasswords`` has to be copied to
-``$sysconfdir/ganeti/instance-debootstrap/hooks/confdata/`` and modified
+order to do this, the `examples/hooks/defaultpasswords` file has to be copied
+to `$sysconfdir/ganeti/instance-debootstrap/hooks/`, and its data file
+`examples/hooks/confdata/defaultpasswords` has to be copied to
+`$sysconfdir/ganeti/instance-debootstrap/hooks/confdata/` and modified
 accordingly to one's own need. The file syntax is such that each line represent
-a user, with the format::
+a user, with the format:
 
+```
   username:password
+```
 
 After copying the two files, just running the instance creation as usual will
 automatically cause their execution.
 
-Caching
-~~~~~~~
+## Caching
 
 As described above, the install process uses a cache file in order to
 speed up repeated installs. If you only rarely do installs, this will
@@ -202,19 +236,13 @@ It is also possible, if done with care, to modify and regenerate the
 cache file (which is simply a tar archive) in order to preseed your
 installs with site-specific customizations.
 
-Instance notes
---------------
+## Instance notes
 
 The instance is a minimal install:
 
  - it has no password for root; simply login at the console
  - it has no network interfaces defined (besides lo); add your own
    definitions to /etc/network/interfaces
- - after configuring the network, it is recommended to run ``apt-get
-   update`` so that signatures for the release files are picked up
+ - after configuring the network, it is recommended to run `apt-get
+   update` so that signatures for the release files are picked up
 
-.. vim: set textwidth=72 :
-.. Local Variables:
-.. mode: rst
-.. fill-column: 72
-.. End:

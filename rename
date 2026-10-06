@@ -37,6 +37,9 @@ if [ "$PARTITION_STYLE" = "none" ]; then
 elif [ "$PARTITION_STYLE" = "msdos" ]; then
   filesystem_dev=$(map_disk0 $blockdev)
   CLEANUP+=("unmap_disk0 $blockdev")
+elif [ "$PARTITION_STYLE" = "gpt-uefi" ]; then
+  filesystem_dev=$(map_disk0 $blockdev "2")
+  CLEANUP+=("unmap_disk0 $blockdev")
 else
   echo "Unknown partition style $PARTITION_STYLE"
   exit 1

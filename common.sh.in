@@ -1,6 +1,7 @@
 #
 
 # Copyright (C) 2007, 2008, 2009, 2012 Google Inc.
+# Copyright (C) 2026 The Ganeti Project
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -107,10 +108,34 @@ ${PARTITION_ALIGNMENT},,L,*
 EOF
 }
 
+format_efi_disk0() {
+  # Create a GPT-style partition table with EFI & Linux partitions
+  local ARGS
+
+  # Some versions of sfdisk need manual specification of head/sectors
+  # for devices such as drbd which don't report geometry.
+  if sfdisk --help | grep -q -e '--cylinders'; then
+    ARGS="-H 64 -S 32 -u S"
+  fi
+
+  # Some versions of sfdisk need to be told to skip checking using ioctl(dev,
+  # BLKRRPART), as this always fails for DRBD and LVM devices.
+  if sfdisk --help | fgrep -q -- '--no-reread'; then
+    ARGS="--no-reread $ARGS"
+  fi
+
+  # create a GPT-style partition table
+  sfdisk $ARGS --label gpt --quiet "$1" <<EOF
+${PARTITION_ALIGNMENT},500M,U
+,,L
+EOF
+}
+
 map_disk0() {
   blockdev="$1"
+  part_index="${2:-1}"
   filesystem_dev_base=`kpartx -l -p-part $blockdev | \
-                       grep -m 1 -- "-part1 : .*$blockdev" | \
+                       grep -m 1 -- "-part${part_index} : .*$blockdev" | \
                        awk '{print $1}'`
   if [ -z "$filesystem_dev_base" ]; then
     log_error "Cannot interpret kpartx output and get partition mapping"
