@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+# This is an example script that installs and configures UEFI grub after
+# installation. To use it put it in your CUSTOMIZE_DIR and make it
+# executable.
+#
+# Do not include grub-efi-amd64 in EXTRA_PKGS of
+# $sysconfdir/default/ganeti-instance-debootstrap because it will
+# cause an error in debootstrap.
+
+set -e
+
+. common.sh
+
+CLEANUP=( )
+
+trap cleanup EXIT
+
+if [ -z "$TARGET" -o ! -d "$TARGET" ]; then
+  echo "Missing target directory"
+  exit 1
+fi
+
+if [ -z "$EFIDEV" ]; then
+  echo "Missing EFI system partition (use PARTITION_STYLE=gpt-uefi)"
+  exit 1
+fi
+
+# Mount virtual filesystems from the HOST
+mount -t proc /proc "$TARGET/proc"
+CLEANUP+=("umount $TARGET/proc")
+
+mount -t sysfs /sys "$TARGET/sys"
+CLEANUP+=("umount $TARGET/sys")
+
+mount --bind /dev "$TARGET/dev"
+CLEANUP+=("umount $TARGET/dev")
+
+# mount the EFI system partition
+mkdir -p "$TARGET/boot/efi"
+mount "$EFIDEV" "$TARGET/boot/efi"
+CLEANUP+=("umount $TARGET/boot/efi")
+
+# install grub
+export LANG=C
+if [ "$PROXY" ]; then
+  export http_proxy="$PROXY"
+  export https_proxy="$PROXY"
+fi
+export DEBIAN_FRONTEND=noninteractive
+chroot "$TARGET" apt-get -y --force-yes install grub-efi-amd64
+
+# install grub to the EFI system partition:
+# - --no-nvram: never touch the host's EFI variables
+# - --removable: install as \EFI\BOOT\BOOTX64.EFI so the instance
+#   boots without a pre-existing NVRAM boot entry.
+chroot "$TARGET" grub-install \
+  --target=x86_64-efi --efi-directory=/boot/efi \
+  --no-nvram --removable
+
+# generate grub.cfg for the installed kernel
+chroot "$TARGET" update-grub
+
+# execute cleanups
+cleanup
+trap - EXIT
+
+exit 0

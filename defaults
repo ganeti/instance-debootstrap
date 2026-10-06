@@ -66,9 +66,11 @@ CLEAN_CACHE="14"
 
 # PARTITION_STYLE: whether and how the target device should be partitioned.
 # Allowed values:
-# 'none': just format the device, but don't partition it
-# 'msdos': install an msdos partition table on the device, with a single
-#          partition on it
+# 'none':     just format the device, but don't partition it
+# 'msdos':    install an msdos partition table on the device, with a
+#             single partition on it
+# 'gpt-uefi': install a GPT partition table with one EFI and one Linux
+#             partition on it
 # (more styles may be added in the future)
 # The default is "msdos" from ganeti 2.0 onwards, but none if installing under
 # Ganeti 1.2 (os api version 5)

@@ -8,7 +8,7 @@ dist_os_SCRIPTS = create import export rename verify
 dist_os_DATA = ganeti_api_version variants.list parameters.list
 os_DATA = common.sh
 
-dist_doc_DATA = COPYING NEWS README
+dist_doc_DATA = COPYING NEWS README.md
 
 exampledir = $(docdir)/examples
 exampleconfdir = $(exampledir)/confdata
@@ -20,6 +20,7 @@ dist_exampleconf_DATA = \
 dist_example_DATA = \
 	examples/hooks/defaultpasswords \
 	examples/hooks/grub \
+	examples/hooks/grub-uefi \
 	examples/hooks/hosts \
 	examples/hooks/interfaces \
 	examples/hooks/ssh-keys \
